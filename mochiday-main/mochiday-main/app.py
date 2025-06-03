@@ -1,3 +1,5 @@
+Python 3.13.2 (tags/v3.13.2:4f8bb39, Feb  4 2025, 15:23:48) [MSC v.1942 64 bit (AMD64)] on win32
+Type "help", "copyright", "credits" or "license()" for more information.
 import requests
 from bs4 import BeautifulSoup
 import re
@@ -33,39 +35,39 @@ def find_jobs(keyword: str, job_sites: list[JobSite], max_results: int = 50):
     print(f"🌐 Raw search results: {result}")
     job_urls = [url for url in result if re.search(regex[JobSite.GREENHOUSE], url)]
     
-    print(f"✅ Filtered Greenhouse job URLs: {job_urls}")
-    return job_urls
-    
-def extract_company_from_url(url: str) -> str:
-    match = re.search(r"greenhouse.io/([^/]+)/jobs", url)
-    return match.group(1) if match else "Unknown"
-
-def get_greenhouse_job_details(link: str) -> dict:
-    retries = 3  # Retry attempts for failed requests
-    for attempt in range(retries):
-        try:
-            response = requests.get(link, timeout=20)
-            response.raise_for_status()
-            break  # Exit loop if successful
-        except requests.exceptions.Timeout:
-            print(f"⏳ Timeout on attempt {attempt + 1}: {link}")
-            if attempt < retries - 1:
-                time.sleep(5)  # Wait before retrying
-                continue
-            else:
-                return {"Company": extract_company_from_url(link), "Title": None, "Image": None, "URL": link, "Status": "Failed", "Error": "Request Timed Out after retries"}
-        except requests.exceptions.RequestException as e:
-            return {"Company": extract_company_from_url(link), "Title": None, "Image": None, "URL": link, "Status": "Failed", "Error": f"Request Failed: {str(e)}"}
-
-    soup = BeautifulSoup(response.content, "html.parser")
-
-    head = soup.find("head")
-    if not head:
-        return {"Company": extract_company_from_url(link), "Title": "Head not found", "Image": None, "URL": link, "Status": "Failed", "Error": "Missing <head> section"}
-
-    position_meta = head.find("meta", property="og:title")
-    position = position_meta.get("content", "Unknown") if position_meta else "Unknown"
-
+...     print(f"✅ Filtered Greenhouse job URLs: {job_urls}")
+...     return job_urls
+...     
+... def extract_company_from_url(url: str) -> str:
+...     match = re.search(r"greenhouse.io/([^/]+)/jobs", url)
+...     return match.group(1) if match else "Unknown"
+... 
+... def get_greenhouse_job_details(link: str) -> dict:
+...     retries = 3  # Retry attempts for failed requests
+...     for attempt in range(retries):
+...         try:
+...             response = requests.get(link, timeout=20)
+...             response.raise_for_status()
+...             break  # Exit loop if successful
+...         except requests.exceptions.Timeout:
+...             print(f"⏳ Timeout on attempt {attempt + 1}: {link}")
+...             if attempt < retries - 1:
+...                 time.sleep(5)  # Wait before retrying
+...                 continue
+...             else:
+...                 return {"Company": extract_company_from_url(link), "Title": None, "Image": None, "URL": link, "Status": "Failed", "Error": "Request Timed Out after retries"}
+...         except requests.exceptions.RequestException as e:
+...             return {"Company": extract_company_from_url(link), "Title": None, "Image": None, "URL": link, "Status": "Failed", "Error": f"Request Failed: {str(e)}"}
+... 
+...     soup = BeautifulSoup(response.content, "html.parser")
+... 
+...     head = soup.find("head")
+...     if not head:
+...         return {"Company": extract_company_from_url(link), "Title": "Head not found", "Image": None, "URL": link, "Status": "Failed", "Error": "Missing <head> section"}
+... 
+...     position_meta = head.find("meta", property="og:title")
+...     position = position_meta.get("content", "Unknown") if position_meta else "Unknown"
+... 
     image_meta = head.find("meta", property="og:image")
     image = image_meta.get("content", None) if image_meta else None
 
