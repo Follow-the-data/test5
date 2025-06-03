@@ -1,4 +1,3 @@
-pip install -r requirements.txt
 import requests
 from bs4 import BeautifulSoup
 import re
